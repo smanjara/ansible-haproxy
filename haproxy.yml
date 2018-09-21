@@ -5,16 +5,16 @@
     haproxy_mode: http
     haproxy_backend: rgw
     haproxy_backend_servers:
-      - {name: rgw1, ip: 10.8.129.01, port: 8080, paramstring: check}
-      - {name: rgw2, ip: 10.8.129.10, port: 8080, paramstring: check}
-    frontend_port: 80
+      - {name: rgw1, ip: "{{ ip_var0 }}", port: 8080, paramstring: check}
+      - {name: rgw2, ip: "{{ ip_var1 }}", port: 8080, paramstring: check}
+    frontend_port: 8080
 
   tasks:
     - name: install haproxy
       yum: name=haproxy state=present
 
     - name: Create HAProxy-http xml
-      template: src=templates/haproxy-http.cfg
+      template: src=haproxy-templates/haproxy-http.cfg
            dest=/etc/firewalld/services/haproxy-http.xml
            backup=yes
 
@@ -26,7 +26,7 @@
       command: chmod 640 /etc/firewalld/services/haproxy-http.xml
 
     - name: Update HAProxy config
-      template: src=templates/haproxy.cfg 
+      template: src=haproxy-templates/haproxy.cfg
             dest=/etc/haproxy/haproxy.cfg 
             backup=yes
       notify: 
