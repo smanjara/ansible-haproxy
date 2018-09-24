@@ -1,0 +1,30 @@
+- hosts: haproxys
+
+  vars:
+    rgw1_ip: "{{ ip_var0 }}"
+    rgw2_ip: "{{ ip_var1 }}"
+    rgw_port: 8080
+    frontend_port: 8080
+
+  tasks:
+    - name: install keepalived
+      yum: name=keepalived state=present
+      become: true
+
+    - name: Update keepalived.conf
+      template: src=haproxy-templates/master.cfg
+           dest=/etc/keepalived/keepalived.conf
+           backup=yes
+      delegate_to: {{ groups['haproxys'][0] }}
+      become: true
+
+    - name: Update keepalived.conf
+      template: src=haproxy-templates/secondary.cfg
+           dest=/etc/keepalived/keepalived.conf
+           backup=yes
+      delegate_to: {{ groups['haproxys'][1] }}
+      become: true
+
+    - name: start keepalived
+      service: name=keepalived state=started
+      become: true
