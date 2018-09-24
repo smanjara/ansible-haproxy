@@ -15,14 +15,14 @@
       template: src=haproxy-templates/master.cfg
            dest=/etc/keepalived/keepalived.conf
            backup=yes
-      delegate_to: {{ groups['haproxys'][0] }}
+      delegate_to: "{{ groups['haproxys'][0] }}"
       become: true
 
     - name: Update keepalived.conf
       template: src=haproxy-templates/secondary.cfg
            dest=/etc/keepalived/keepalived.conf
            backup=yes
-      delegate_to: {{ groups['haproxys'][1] }}
+      delegate_to: "{{ groups['haproxys'][1] }}"
       become: true
 
     - name: start keepalived
