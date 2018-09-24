@@ -12,26 +12,32 @@
   tasks:
     - name: install haproxy
       yum: name=haproxy state=present
+      become: true
 
     - name: Create HAProxy-http xml
       template: src=haproxy-templates/haproxy-http.cfg
            dest=/etc/firewalld/services/haproxy-http.xml
            backup=yes
+      become: true
 
     - name: start firewalld
       service: name=firewalld state=started
+      become: true
 
     - name: set SELinux on HAProxy-http
       command: restorecon /etc/firewalld/services/haproxy-http.xml
       command: chmod 640 /etc/firewalld/services/haproxy-http.xml
+      become: true
 
     - name: Update HAProxy config
       template: src=haproxy-templates/haproxy.cfg
             dest=/etc/haproxy/haproxy.cfg 
             backup=yes
+      become: true
       notify: 
         - restart haproxy
 
   handlers:
     - name: restart haproxy
       service: name=haproxy state=restarted
+      become: true
